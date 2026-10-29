@@ -1,0 +1,1328 @@
+<!DOCTYPE html>
+<html lang="uk" class="dark scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iRealm Hub — Нові та Б/У iPhones за найкращими цінами</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        irealm: {
+                            dark: '#070709',
+                            card: '#121218',
+                            accent: '#0071e3',
+                            purple: '#8b5cf6',
+                            gold: '#f59e0b',
+                            emerald: '#10b981'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Modern Glassmorphism Effects */
+        .glass {
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .glass-dark {
+            background: rgba(10, 10, 15, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .glass-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #070709; }
+        ::-webkit-scrollbar-thumb { background: #27272a; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #3f3f46; }
+
+        .pulse-subtle {
+            animation: pulseGlow 3s infinite alternate;
+        }
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 15px rgba(0, 113, 227, 0.2); }
+            100% { box-shadow: 0 0 35px rgba(139, 92, 246, 0.4); }
+        }
+    </style>
+</head>
+<body class="bg-[#070709] text-gray-100 font-sans antialiased selection:bg-blue-600 selection:text-white min-h-screen flex flex-col justify-between">
+
+    <!-- HEADER / NAVBAR -->
+    <header class="fixed top-0 left-0 right-0 z-40 glass-dark border-b border-white/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            
+            <!-- Logo -->
+            <a href="#" onclick="registerHeaderLogoTap(event)" class="flex items-center gap-2.5 group select-none cursor-pointer">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-purple-600 flex items-center justify-center text-white shadow-lg shadow-blue-500/30 group-hover:scale-105 transition-transform">
+                    <i data-lucide="smartphone" class="w-5 h-5"></i>
+                </div>
+                <div class="flex flex-col">
+                    <span class="text-lg font-black tracking-tight text-white flex items-center gap-1">
+                        iRealm <span class="text-xs px-1.5 py-0.5 rounded bg-blue-600/30 text-blue-400 border border-blue-500/30">HUB</span>
+                    </span>
+                    <span class="text-[10px] text-gray-400 font-medium">Apple Marketplace №1 <span id="headerTapCounter" class="text-purple-400 font-mono font-bold"></span></span>
+                </div>
+            </a>
+
+            <!-- Navigation Links -->
+            <nav class="hidden md:flex items-center gap-6 text-sm font-medium text-gray-300">
+                <a href="#catalog" onclick="filterCondition('all')" class="hover:text-white transition-colors">Усі Айфони</a>
+                <a href="#catalog" onclick="filterCondition('new')" class="hover:text-emerald-400 transition-colors flex items-center gap-1">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Нові
+                </a>
+                <a href="#catalog" onclick="filterCondition('used')" class="hover:text-amber-400 transition-colors flex items-center gap-1">
+                    <span class="w-2 h-2 rounded-full bg-amber-500"></span> Б/У з Гарантією
+                </a>
+                <a href="#guarantees" class="hover:text-white transition-colors">Гарантія та Сервіс</a>
+            </nav>
+
+            <!-- User & Cart Controls -->
+            <div class="flex items-center gap-3">
+                <!-- Search Button Toggle -->
+                <button onclick="toggleSearchModal()" class="p-2.5 rounded-xl glass hover:bg-white/10 text-gray-300 hover:text-white transition-all">
+                    <i data-lucide="search" class="w-5 h-5"></i>
+                </button>
+
+                <!-- Profile Button -->
+                <button onclick="openProfileOrAuth()" class="p-2.5 rounded-xl glass hover:bg-white/10 text-gray-300 hover:text-white transition-all flex items-center gap-2">
+                    <i data-lucide="user" class="w-5 h-5"></i>
+                    <span id="navUserName" class="hidden sm:inline text-xs font-semibold">Увійти</span>
+                </button>
+
+                <!-- Cart Button -->
+                <button onclick="toggleCartDrawer()" class="relative p-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-semibold transition-all shadow-lg shadow-blue-500/25 flex items-center gap-2">
+                    <i data-lucide="shopping-bag" class="w-5 h-5"></i>
+                    <span id="cartCountBadge" class="w-5 h-5 rounded-full bg-white text-blue-900 font-bold text-xs flex items-center justify-center">0</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="pt-20 pb-16 flex-grow">
+        
+        <!-- HERO BANNER -->
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 my-6">
+            <div class="relative rounded-3xl p-8 sm:p-12 overflow-hidden border border-white/10 glass-card pulse-subtle flex flex-col md:flex-row items-center justify-between gap-8">
+                <!-- Ambient Background Glows -->
+                <div class="absolute -top-20 -left-20 w-80 h-80 bg-blue-600/20 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="absolute -bottom-20 -right-20 w-80 h-80 bg-purple-600/20 rounded-full blur-3xl pointer-events-none"></div>
+
+                <div class="space-y-4 max-w-2xl text-center md:text-left z-10">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-xs font-bold text-blue-400">
+                        <i data-lucide="shield-check" class="w-4 h-4"></i>
+                        <span>100% Перевірені пристрої • Гарантія до 12 міс</span>
+                    </div>
+                    <h1 class="text-3xl sm:text-5xl font-black text-white tracking-tight leading-tight">
+                        Твій ідеальний iPhone.<br>
+                        <span class="bg-gradient-to-r from-blue-400 via-indigo-300 to-purple-400 bg-clip-text text-transparent">
+                            Новий або Б/У в ідеалі.
+                        </span>
+                    </h1>
+                    <p class="text-gray-400 text-sm sm:text-base">
+                        Понад 350 моделей у наявності. Всі Б/У пристрої проходять 40+ етапів тестування, мають залишок АКБ від 85% до 100% та офіційну гарантію від магазину.
+                    </p>
+                    <div class="flex flex-wrap gap-3 justify-center md:justify-start pt-2">
+                        <a href="#catalog" onclick="filterCondition('used')" class="px-5 py-3 bg-white text-black font-bold text-xs rounded-xl hover:bg-gray-200 transition-all flex items-center gap-2">
+                            <i data-lucide="tag" class="w-4 h-4"></i> Каталог Б/У з АКБ 85-100%
+                        </a>
+                        <a href="#catalog" onclick="filterCondition('new')" class="px-5 py-3 glass hover:bg-white/10 text-white font-bold text-xs rounded-xl border border-white/15 transition-all">
+                            Нові iPhone 15 & 16
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Banner Image Graphic -->
+                <div class="relative z-10 flex-shrink-0">
+                    <img src="https://images.unsplash.com/photo-1695048133142-1a20484d2569?q=80&w=500&auto=format&fit=crop" alt="iPhone 15 Pro" class="w-64 sm:w-80 rounded-2xl shadow-2xl border border-white/20 transform hover:scale-105 transition-transform duration-500">
+                </div>
+            </div>
+        </section>
+
+        <!-- CATALOG CONTROLS & FILTER SECTION -->
+        <section id="catalog" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
+            
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+                <div>
+                    <h2 class="text-2xl sm:text-3xl font-black text-white tracking-tight">Каталог Смартфонів</h2>
+                    <p class="text-xs text-gray-400 mt-1">Знайдіть пристрій за бюджетом та характеристиками</p>
+                </div>
+
+                <!-- Condition Filters (All / New / Used) -->
+                <div class="flex items-center gap-1.5 p-1.5 glass rounded-2xl border border-white/10 self-start md:self-auto">
+                    <button id="btnFilterAll" onclick="filterCondition('all')" class="px-4 py-2 rounded-xl text-xs font-bold transition-all bg-blue-600 text-white">Усі</button>
+                    <button id="btnFilterNew" onclick="filterCondition('new')" class="px-4 py-2 rounded-xl text-xs font-bold transition-all text-gray-400 hover:text-white">Нові</button>
+                    <button id="btnFilterUsed" onclick="filterCondition('used')" class="px-4 py-2 rounded-xl text-xs font-bold transition-all text-gray-400 hover:text-white">Б/У (85-100% АКБ)</button>
+                </div>
+            </div>
+
+            <!-- Extended Filters Toolbar -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                <!-- Search Input -->
+                <div class="relative">
+                    <i data-lucide="search" class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                    <input type="text" id="searchInput" oninput="applyFilters()" placeholder="Пошук (напр. iPhone 13 Pro)..." class="w-full bg-zinc-900 border border-white/10 rounded-xl pl-10 pr-4 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-blue-500">
+                </div>
+
+                <!-- Series Select Filter -->
+                <div>
+                    <select id="seriesFilter" onchange="applyFilters()" class="w-full bg-zinc-900 border border-white/10 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-blue-500">
+                        <option value="all">Усі серії iPhone</option>
+                        <option value="16">iPhone 16 Серія</option>
+                        <option value="15">iPhone 15 Серія</option>
+                        <option value="14">iPhone 14 Серія</option>
+                        <option value="13">iPhone 13 Серія</option>
+                        <option value="12">iPhone 12 Серія</option>
+                        <option value="11">iPhone 11 Серія</option>
+                    </select>
+                </div>
+
+                <!-- Storage Filter -->
+                <div>
+                    <select id="storageFilter" onchange="applyFilters()" class="w-full bg-zinc-900 border border-white/10 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-blue-500">
+                        <option value="all">Усі об'єми пам'яті</option>
+                        <option value="128GB">128 GB</option>
+                        <option value="256GB">256 GB</option>
+                        <option value="512GB">512 GB</option>
+                        <option value="1TB">1 TB</option>
+                    </select>
+                </div>
+
+                <!-- Sorting Filter -->
+                <div>
+                    <select id="sortFilter" onchange="applyFilters()" class="w-full bg-zinc-900 border border-white/10 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-blue-500">
+                        <option value="default">Сортування: За замовчуванням</option>
+                        <option value="price-asc">Ціна: від найдешевшої</option>
+                        <option value="price-desc">Ціна: від найдорожчої</option>
+                        <option value="battery-desc">Стан АКБ: найвищий %</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- PRODUCT GRID CONTAINER -->
+            <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <!-- Rendered dynamically via JS -->
+            </div>
+        </section>
+
+        <!-- GUARANTEES & ADVANTAGES SECTION -->
+        <section id="guarantees" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 border-t border-white/10 mt-20">
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <span class="text-blue-500 font-bold text-xs uppercase tracking-wider">Чому обирають iRealm Hub</span>
+                <h2 class="text-3xl font-black text-white mt-1">Чіткі стандарти якості</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="glass-card p-6 rounded-2xl border border-white/10">
+                    <div class="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center mb-4">
+                        <i data-lucide="battery-charging" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="font-bold text-lg text-white">Перевірка АКБ та чипів</h3>
+                    <p class="text-xs text-gray-400 mt-2 leading-relaxed">
+                        Кожен Б/У iPhone проходить комп'ютерну діагностику 3uTools. Ми гарантуємо оригінальність деталей без помилок у налаштуваннях.
+                    </p>
+                </div>
+
+                <div class="glass-card p-6 rounded-2xl border border-white/10">
+                    <div class="w-12 h-12 rounded-xl bg-blue-500/10 text-blue-400 flex items-center justify-center mb-4">
+                        <i data-lucide="shield-check" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="font-bold text-lg text-white">Гарантія 12 місяців</h3>
+                    <p class="text-xs text-gray-400 mt-2 leading-relaxed">
+                        Ви отримуєте гарантійний талон від магазину. У разі несправності — швидка заміна або безкоштовний ремонт.
+                    </p>
+                </div>
+
+                <div class="glass-card p-6 rounded-2xl border border-white/10">
+                    <div class="w-12 h-12 rounded-xl bg-purple-500/10 text-purple-400 flex items-center justify-center mb-4">
+                        <i data-lucide="truck" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="font-bold text-lg text-white">Доставка без передплат</h3>
+                    <p class="text-xs text-gray-400 mt-2 leading-relaxed">
+                        Надсилаємо Новою Поштою по всій Україні з можливістю огляду та перевірки пристрою перед оплатою.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="border-t border-white/10 bg-black/60 py-8 text-xs text-gray-400">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-2 text-white font-bold">
+                <i data-lucide="smartphone" class="w-4 h-4 text-blue-500"></i>
+                <span>iRealm Hub Ukraine © 2026</span>
+            </div>
+            <p>Преміальний магазин телефонів Apple. Усі права захищені.</p>
+            <div class="flex items-center gap-4">
+                <a href="#" onclick="openProfileOrAuth()" class="hover:text-white">Особистий кабінет</a>
+                <a href="#" class="hover:text-white">Підтримка</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- CART SLIDE-OVER DRAWER -->
+    <div id="cartDrawer" class="fixed inset-0 z-50 overflow-hidden hidden">
+        <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" onclick="toggleCartDrawer()"></div>
+        <div class="absolute inset-y-0 right-0 max-w-full flex pl-10">
+            <div class="w-screen max-w-md glass-dark border-l border-white/10 p-6 flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between border-b border-white/10 pb-4">
+                        <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                            <i data-lucide="shopping-bag" class="w-5 h-5 text-blue-500"></i>
+                            Ваш Кошик
+                        </h2>
+                        <button onclick="toggleCartDrawer()" class="p-2 text-gray-400 hover:text-white rounded-lg glass">
+                            <i data-lucide="x" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+
+                    <!-- Cart List Container -->
+                    <div id="cartItemsList" class="mt-6 space-y-4 max-h-[55vh] overflow-y-auto pr-1">
+                        <!-- Dynamic items rendered here -->
+                    </div>
+                </div>
+
+                <!-- Cart Bottom Checkout -->
+                <div class="border-t border-white/10 pt-4 space-y-4">
+                    <!-- Promo Code Input -->
+                    <div class="flex gap-2">
+                        <input type="text" id="cartPromoInput" placeholder="Промокод (напр. APEX10)" class="flex-grow bg-zinc-900 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none uppercase">
+                        <button onclick="applyPromoCode()" class="px-3 py-2 bg-zinc-800 hover:bg-zinc-700 text-xs font-bold text-white rounded-xl">Застосувати</button>
+                    </div>
+
+                    <div class="space-y-1 text-xs">
+                        <div class="flex justify-between text-gray-400">
+                            <span>Сума:</span>
+                            <span id="cartSubtotalText">0 ₴</span>
+                        </div>
+                        <div id="cartDiscountRow" class="flex justify-between text-emerald-400 hidden">
+                            <span>Знижка промокоду:</span>
+                            <span id="cartDiscountText">-0 ₴</span>
+                        </div>
+                        <div class="flex justify-between text-base font-bold text-white pt-2 border-t border-white/10">
+                            <span>Разом:</span>
+                            <span id="cartTotalText">0 ₴</span>
+                        </div>
+                    </div>
+
+                    <button onclick="openCheckoutModal()" class="w-full py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-xs rounded-xl shadow-lg shadow-blue-500/25 transition-all">
+                        Оформити замовлення
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AUTH MODAL (LOGIN / REGISTER) -->
+    <div id="authModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md hidden">
+        <div class="glass-dark border border-white/15 rounded-3xl w-full max-w-md p-6 relative overflow-hidden shadow-2xl">
+            <button onclick="closeAuthModal()" class="absolute top-4 right-4 p-2 text-gray-400 hover:text-white glass rounded-full">
+                <i data-lucide="x" class="w-4 h-4"></i>
+            </button>
+
+            <!-- Auth Tabs -->
+            <div class="flex gap-2 border-b border-white/10 pb-4 mb-6">
+                <button id="tabLogin" onclick="switchAuthTab('login')" class="flex-1 py-2 text-xs font-bold text-white border-b-2 border-blue-500">Увійти</button>
+                <button id="tabRegister" onclick="switchAuthTab('register')" class="flex-1 py-2 text-xs font-bold text-gray-400 hover:text-white">Реєстрація</button>
+            </div>
+
+            <div class="text-center mb-4">
+                <button type="button" onclick="openAdminPinModalFromGuest()" class="text-[11px] text-purple-400 hover:text-purple-300 font-semibold flex items-center justify-center gap-1 mx-auto py-1 px-3 rounded-lg bg-purple-500/10 border border-purple-500/20">
+                    <i data-lucide="shield-alert" class="w-3.5 h-3.5"></i> Вхід для Адміністратора (Гість)
+                </button>
+            </div>
+
+            <!-- Login Form -->
+            <form id="formLogin" onsubmit="handleLoginSubmit(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-300 mb-1">Email адреса</label>
+                    <input type="email" id="loginEmail" required placeholder="user@gmail.com" class="w-full bg-zinc-900 border border-white/10 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-blue-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-300 mb-1">Пароль</label>
+                    <input type="password" id="loginPass" required placeholder="••••••••" class="w-full bg-zinc-900 border border-white/10 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-blue-500">
+                </div>
+                <button type="submit" class="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs rounded-xl transition-all">Увійти в кабінет</button>
+            </form>
+
+            <!-- Register Form -->
+            <form id="formRegister" onsubmit="handleRegisterSubmit(event)" class="space-y-4 hidden">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-300 mb-1">Ваше Ім'я</label>
+                    <input type="text" id="regName" required placeholder="Олександр Коваль" class="w-full bg-zinc-900 border border-white/10 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-blue-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-300 mb-1">Email адреса</label>
+                    <input type="email" id="regEmail" required placeholder="user@gmail.com" class="w-full bg-zinc-900 border border-white/10 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-blue-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-300 mb-1">Номер телефону <span class="text-gray-500 font-normal">(за бажанням)</span></label>
+                    <input type="tel" id="regPhone" placeholder="+380971234567 (необов'язково)" class="w-full bg-zinc-900 border border-white/10 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-blue-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-300 mb-1">Придумайте пароль</label>
+                    <input type="password" id="regPass" required placeholder="••••••••" class="w-full bg-zinc-900 border border-white/10 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-blue-500">
+                </div>
+                <button type="submit" class="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl transition-all">Створити акаунт</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- USER PROFILE MODAL (WITH EASTER EGG TAP MECHANIC) -->
+    <div id="profileModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md hidden">
+        <div class="glass-dark border border-white/15 rounded-3xl w-full max-w-lg p-6 relative overflow-hidden shadow-2xl">
+            <button onclick="closeProfileModal()" class="absolute top-4 right-4 p-2 text-gray-400 hover:text-white glass rounded-full">
+                <i data-lucide="x" class="w-4 h-4"></i>
+            </button>
+
+            <!-- Profile Header & Secret Avatar Trigger -->
+            <div class="flex items-center gap-4 border-b border-white/10 pb-6">
+                <!-- SECRET TRIGGER BUTTON: Rapid 10 taps on Avatar unlocks Admin PIN dialog -->
+                <div onclick="registerAvatarTap()" class="relative group cursor-pointer select-none">
+                    <div id="userAvatarContainer" class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-purple-600 flex items-center justify-center text-white text-xl font-black shadow-lg hover:scale-105 transition-transform border border-white/20">
+                        <span id="userAvatarText">I</span>
+                    </div>
+                    <span class="absolute -bottom-1 -right-1 w-5 h-5 bg-emerald-500 border-2 border-black rounded-full flex items-center justify-center text-[10px]" title="Онлайн">✓</span>
+                </div>
+
+                <div>
+                    <h3 id="profUserName" class="text-xl font-bold text-white">Іван Іванов</h3>
+                    <p id="profUserEmail" class="text-xs text-gray-400">user@gmail.com</p>
+                    <div class="flex items-center gap-2 mt-2">
+                        <span class="px-2 py-0.5 rounded bg-blue-500/20 text-blue-400 text-[10px] font-bold">Клієнт iRealm</span>
+                        <span id="tapHintCounter" class="text-[10px] text-zinc-500"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Info Cards -->
+            <div class="grid grid-cols-2 gap-3 my-6">
+                <div class="glass p-3 rounded-2xl border border-white/10">
+                    <p class="text-[10px] text-gray-400">Бонусний рахунок</p>
+                    <p class="text-lg font-bold text-amber-400 mt-1">500 ₴</p>
+                </div>
+                <div class="glass p-3 rounded-2xl border border-white/10">
+                    <p class="text-[10px] text-gray-400">Телефон</p>
+                    <p id="profUserPhone" class="text-xs font-bold text-white mt-1.5">+380970000000</p>
+                </div>
+            </div>
+
+            <!-- System Messages / Notifications from Admin -->
+            <div id="userNotificationsBox" class="mb-6 hidden">
+                <h4 class="text-xs font-bold text-blue-400 mb-2 flex items-center gap-1">
+                    <i data-lucide="bell" class="w-3.5 h-3.5"></i> Повідомлення від адміністрації:
+                </h4>
+                <div id="userNotificationsContent" class="space-y-2">
+                    <!-- Added by admin -->
+                </div>
+            </div>
+
+            <!-- Order History -->
+            <div class="mb-6">
+                <h4 class="text-xs font-bold text-white mb-2">Історія замовлень</h4>
+                <div id="profOrderHistory" class="space-y-2 max-h-36 overflow-y-auto pr-1">
+                    <p class="text-xs text-gray-500 italic">У вас поки немає здійснених замовлень.</p>
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center pt-4 border-t border-white/10">
+                <button onclick="handleLogout()" class="px-4 py-2 bg-red-500/20 hover:bg-red-500/30 text-red-400 rounded-xl text-xs font-bold transition-all">Вийти з акаунту</button>
+                <button onclick="closeProfileModal()" class="px-4 py-2 glass rounded-xl text-xs font-semibold">Закрити</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECRET ADMIN PIN MODAL -->
+    <div id="adminPinModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-lg hidden">
+        <div class="glass-dark border border-purple-500/30 rounded-3xl w-full max-w-sm p-6 text-center space-y-4 shadow-2xl">
+            <div class="w-12 h-12 bg-purple-500/20 text-purple-400 rounded-2xl flex items-center justify-center mx-auto border border-purple-500/30">
+                <i data-lucide="key" class="w-6 h-6"></i>
+            </div>
+            <div>
+                <h3 class="text-lg font-black text-white">iRealm Admin Gateway</h3>
+                <p class="text-xs text-gray-400 mt-1">Введіть 6-значний секретний PIN-код доступу</p>
+            </div>
+
+            <input type="password" id="adminPinInput" maxlength="6" placeholder="******" class="w-full text-center tracking-widest text-xl font-mono bg-zinc-900 border border-purple-500/50 rounded-xl py-3 text-white focus:outline-none">
+
+            <div class="flex gap-2">
+                <button onclick="closeAdminPinModal()" class="flex-1 py-2.5 glass rounded-xl text-xs font-bold text-gray-400">Скасувати</button>
+                <button onclick="verifyAdminPin()" class="flex-1 py-2.5 bg-purple-600 hover:bg-purple-500 text-white rounded-xl text-xs font-bold">Увійти</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SUPER ADMIN CONSOLE / MODAL PANEL -->
+    <div id="adminConsoleModal" class="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/90 backdrop-blur-xl hidden">
+        <div class="glass-dark border border-purple-500/40 rounded-3xl w-full max-w-6xl h-[92vh] flex flex-col justify-between overflow-hidden shadow-2xl relative">
+            
+            <!-- Admin Console Header -->
+            <div class="p-4 sm:p-6 border-b border-white/10 flex items-center justify-between bg-purple-950/20">
+                <div class="flex items-center gap-3">
+                    <div class="p-2.5 bg-purple-600/30 text-purple-300 rounded-xl border border-purple-500/30">
+                        <i data-lucide="terminal" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-black text-white flex items-center gap-2">
+                            SUPER ADMIN CONSOLE <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 text-[10px] font-bold">ОНЛАЙН</span>
+                        </h2>
+                        <p class="text-xs text-gray-400">Панель керування товарами, база клієнтів та системні логи</p>
+                    </div>
+                </div>
+                <button onclick="closeAdminConsole()" class="p-2 text-gray-400 hover:text-white glass rounded-xl">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <!-- Admin Navigation Tabs -->
+            <div class="flex gap-2 px-6 pt-4 border-b border-white/10 bg-zinc-950/40 text-xs font-bold overflow-x-auto">
+                <button onclick="switchAdminTab('inventory')" id="admTabInv" class="px-4 py-2.5 rounded-t-xl text-white bg-purple-600">Керування Товарами</button>
+                <button onclick="switchAdminTab('users')" id="admTabUsers" class="px-4 py-2.5 rounded-t-xl text-gray-400 hover:text-white">База Клієнтів CRM (<span id="admUsersCount">0</span>)</button>
+                <button onclick="switchAdminTab('promos')" id="admTabPromos" class="px-4 py-2.5 rounded-t-xl text-gray-400 hover:text-white">Промокоди</button>
+                <button onclick="switchAdminTab('logs')" id="admTabLogs" class="px-4 py-2.5 rounded-t-xl text-gray-400 hover:text-white">Логи Сервера</button>
+            </div>
+
+            <!-- Admin Body Content Area -->
+            <div class="p-6 flex-grow overflow-y-auto space-y-6">
+                
+                <!-- ANALYTICS CARDS ROW -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="glass p-4 rounded-2xl border border-white/10">
+                        <p class="text-[10px] text-gray-400">Загальний виторг</p>
+                        <p id="admStatRevenue" class="text-xl font-black text-emerald-400 mt-1">0 ₴</p>
+                    </div>
+                    <div class="glass p-4 rounded-2xl border border-white/10">
+                        <p class="text-[10px] text-gray-400">Всього користувачів</p>
+                        <p id="admStatUsers" class="text-xl font-black text-blue-400 mt-1">0</p>
+                    </div>
+                    <div class="glass p-4 rounded-2xl border border-white/10">
+                        <p class="text-[10px] text-gray-400">Товарів в базі</p>
+                        <p id="admStatItems" class="text-xl font-black text-purple-400 mt-1">0</p>
+                    </div>
+                    <div class="glass p-4 rounded-2xl border border-white/10">
+                        <p class="text-[10px] text-gray-400">Оформлено замовлень</p>
+                        <p id="admStatOrders" class="text-xl font-black text-amber-400 mt-1">0</p>
+                    </div>
+                </div>
+
+                <!-- SECTION 1: INVENTORY MANAGEMENT -->
+                <div id="admSecInventory" class="space-y-6">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                        <h3 class="font-bold text-white text-base">Список Асортименту Смартфонів</h3>
+                        <button onclick="openAddNewPhoneModal()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold flex items-center gap-1.5">
+                            <i data-lucide="plus" class="w-4 h-4"></i> Додати Новий iPhone
+                        </button>
+                    </div>
+
+                    <div class="overflow-x-auto border border-white/10 rounded-2xl glass">
+                        <table class="w-full text-left text-xs text-gray-300">
+                            <thead class="bg-zinc-900/80 uppercase text-[10px] font-bold text-gray-400 border-b border-white/10">
+                                <tr>
+                                    <th class="p-3">Модель</th>
+                                    <th class="p-3">Стан</th>
+                                    <th class="p-3">АКБ %</th>
+                                    <th class="p-3">Пам'ять</th>
+                                    <th class="p-3">Ціна (₴)</th>
+                                    <th class="p-3">Статус наявності</th>
+                                    <th class="p-3">Дії</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admInventoryTable" class="divide-y divide-white/5">
+                                <!-- Dynamic admin table rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- SECTION 2: USERS CRM DATABASE -->
+                <div id="admSecUsers" class="space-y-6 hidden">
+                    <h3 class="font-bold text-white text-base">Зареєстровані Клієнти (CRM)</h3>
+                    <div class="overflow-x-auto border border-white/10 rounded-2xl glass">
+                        <table class="w-full text-left text-xs text-gray-300">
+                            <thead class="bg-zinc-900/80 uppercase text-[10px] font-bold text-gray-400 border-b border-white/10">
+                                <tr>
+                                    <th class="p-3">Клієнт</th>
+                                    <th class="p-3">Email</th>
+                                    <th class="p-3">Телефон</th>
+                                    <th class="p-3">Замовлень</th>
+                                    <th class="p-3">Написати повідомлення</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admUsersTable" class="divide-y divide-white/5">
+                                <!-- Dynamic users rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- SECTION 3: PROMOCODES MANAGEMENT -->
+                <div id="admSecPromos" class="space-y-6 hidden">
+                    <div class="glass p-6 rounded-2xl border border-white/10 max-w-md space-y-4">
+                        <h4 class="font-bold text-white text-sm">Створити Новий Промокод</h4>
+                        <div>
+                            <label class="block text-xs text-gray-400 mb-1">Код промокоду</label>
+                            <input type="text" id="newPromoCode" placeholder="APEX10" class="w-full bg-zinc-900 border border-white/10 rounded-xl px-3 py-2 text-xs text-white uppercase font-bold">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-400 mb-1">Знижка у %</label>
+                            <input type="number" id="newPromoDiscount" placeholder="10" class="w-full bg-zinc-900 border border-white/10 rounded-xl px-3 py-2 text-xs text-white">
+                        </div>
+                        <button onclick="createNewPromoCode()" class="w-full py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs rounded-xl">Створити Промокод</button>
+                    </div>
+
+                    <div class="glass p-4 rounded-2xl border border-white/10">
+                        <h4 class="font-bold text-white text-sm mb-3">Активні Промокоди:</h4>
+                        <div id="admActivePromosList" class="space-y-2">
+                            <!-- Dynamic promos list -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION 4: SERVER LOGS -->
+                <div id="admSecLogs" class="space-y-4 hidden">
+                    <h3 class="font-bold text-white text-base">Журнал подій магазину (Live Server Logs)</h3>
+                    <div id="admLogsContainer" class="bg-black/80 font-mono text-emerald-400 text-xs p-4 rounded-2xl border border-white/10 h-64 overflow-y-auto space-y-1">
+                        <!-- Dynamic logs -->
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- DIRECT MESSENGER MODAL (ADMIN TO USER) -->
+    <div id="admMsgModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md hidden">
+        <div class="glass-dark border border-blue-500/40 rounded-3xl w-full max-w-md p-6 space-y-4 shadow-2xl">
+            <h3 class="text-base font-bold text-white flex items-center gap-2">
+                <i data-lucide="send" class="w-4 h-4 text-blue-400"></i> Надіслати сповіщення користувачу
+            </h3>
+            <p id="admMsgTargetUser" class="text-xs text-gray-400">Отримувач: -</p>
+
+            <textarea id="admMsgText" rows="4" placeholder="Введіть текст повідомлення або пропозиції для клієнта..." class="w-full bg-zinc-900 border border-white/10 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-blue-500"></textarea>
+
+            <div class="flex gap-2">
+                <button onclick="closeAdminMsgModal()" class="flex-1 py-2.5 glass rounded-xl text-xs font-bold text-gray-400">Скасувати</button>
+                <button onclick="sendAdminMessageToUser()" class="flex-1 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs rounded-xl">Надіслати</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADD NEW PHONE MODAL (ADMIN) -->
+    <div id="addNewPhoneModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md hidden">
+        <div class="glass-dark border border-emerald-500/40 rounded-3xl w-full max-w-md p-6 space-y-4 shadow-2xl">
+            <h3 class="text-base font-bold text-white">Додати Новий iPhone в Каталог</h3>
+            
+            <form onsubmit="handleNewPhoneSubmit(event)" class="space-y-3">
+                <div>
+                    <label class="block text-[10px] text-gray-400 mb-1">Назва Моделі</label>
+                    <input type="text" id="addPhoneTitle" required placeholder="iPhone 15 Pro Max" class="w-full bg-zinc-900 border border-white/10 rounded-xl px-3 py-2 text-xs text-white">
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block text-[10px] text-gray-400 mb-1">Серія</label>
+                        <select id="addPhoneSeries" class="w-full bg-zinc-900 border border-white/10 rounded-xl px-3 py-2 text-xs text-white">
+                            <option value="16">16</option>
+                            <option value="15">15</option>
+                            <option value="14">14</option>
+                            <option value="13">13</option>
+                            <option value="12">12</option>
+                            <option value="11">11</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] text-gray-400 mb-1">Стан</label>
+                        <select id="addPhoneCondition" class="w-full bg-zinc-900 border border-white/10 rounded-xl px-3 py-2 text-xs text-white">
+                            <option value="new">Новий</option>
+                            <option value="used">Б/У</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block text-[10px] text-gray-400 mb-1">АКБ %</label>
+                        <input type="number" id="addPhoneBattery" value="100" min="80" max="100" class="w-full bg-zinc-900 border border-white/10 rounded-xl px-3 py-2 text-xs text-white">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] text-gray-400 mb-1">Пам'ять</label>
+                        <select id="addPhoneStorage" class="w-full bg-zinc-900 border border-white/10 rounded-xl px-3 py-2 text-xs text-white">
+                            <option value="128GB">128GB</option>
+                            <option value="256GB">256GB</option>
+                            <option value="512GB">512GB</option>
+                            <option value="1TB">1TB</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-[10px] text-gray-400 mb-1">Ціна у ₴</label>
+                    <input type="number" id="addPhonePrice" required placeholder="35000" class="w-full bg-zinc-900 border border-white/10 rounded-xl px-3 py-2 text-xs text-white">
+                </div>
+
+                <div>
+                    <label class="block text-[10px] text-gray-400 mb-1">URL Фото</label>
+                    <input type="url" id="addPhoneImg" placeholder="https://..." class="w-full bg-zinc-900 border border-white/10 rounded-xl px-3 py-2 text-xs text-white">
+                </div>
+
+                <div class="flex gap-2 pt-2">
+                    <button type="button" onclick="closeAddNewPhoneModal()" class="flex-1 py-2.5 glass rounded-xl text-xs font-bold text-gray-400">Скасувати</button>
+                    <button type="submit" class="flex-1 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl">Додати</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- CHECKOUT ORDER MODAL -->
+    <div id="checkoutModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md hidden">
+        <div class="glass-dark border border-white/15 rounded-3xl w-full max-w-md p-6 relative overflow-hidden shadow-2xl">
+            <button onclick="closeCheckoutModal()" class="absolute top-4 right-4 p-2 text-gray-400 hover:text-white glass rounded-full">
+                <i data-lucide="x" class="w-4 h-4"></i>
+            </button>
+
+            <h3 class="text-xl font-bold text-white mb-4">Оформлення Замовлення</h3>
+
+            <form onsubmit="handleCheckoutSubmit(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-300 mb-1">Прізвище та Ім'я</label>
+                    <input type="text" id="orderName" required placeholder="Олександр Коваль" class="w-full bg-zinc-900 border border-white/10 rounded-xl px-3 py-2.5 text-xs text-white">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-300 mb-1">Телефон для зв'язку</label>
+                    <input type="tel" id="orderPhone" required placeholder="+380971234567" class="w-full bg-zinc-900 border border-white/10 rounded-xl px-3 py-2.5 text-xs text-white">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-300 mb-1">Місто та Нова Пошта</label>
+                    <input type="text" id="orderAddress" required placeholder="м. Львів, Відділення №5" class="w-full bg-zinc-900 border border-white/10 rounded-xl px-3 py-2.5 text-xs text-white">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-300 mb-1">Спосіб оплати</label>
+                    <select id="orderPayMethod" class="w-full bg-zinc-900 border border-white/10 rounded-xl px-3 py-2.5 text-xs text-white">
+                        <option value="При отриманні">Оплата при отриманні (Накладений платіж)</option>
+                        <option value="Оплата карткою">Онлайн карткою (Visa/Mastercard)</option>
+                    </select>
+                </div>
+
+                <div class="pt-2 border-t border-white/10 flex justify-between items-center">
+                    <div>
+                        <p class="text-[10px] text-gray-400">До сплати:</p>
+                        <p id="checkoutFinalAmount" class="text-xl font-black text-white">0 ₴</p>
+                    </div>
+                    <button type="submit" class="px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-xs rounded-xl shadow-lg">
+                        Підтвердити
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        lucide.createIcons();
+
+        // DEFAULT INITIAL PRODUCTS INVENTORY
+        const initialProducts = [
+            { id: 101, title: 'iPhone 15 Pro', series: '15', condition: 'used', conditionText: 'Б/У (Ідеальний 99%)', battery: 98, storage: '128GB', price: 34500, color: 'Natural Titanium', img: 'https://images.unsplash.com/photo-1695048133142-1a20484d2569?q=80&w=500&auto=format&fit=crop', available: true },
+            { id: 102, title: 'iPhone 16 Pro Max', series: '16', condition: 'new', conditionText: 'Новий (Запечатаний)', battery: 100, storage: '256GB', price: 56900, color: 'Desert Titanium', img: 'https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?q=80&w=500&auto=format&fit=crop', available: true },
+            { id: 103, title: 'iPhone 14 Pro', series: '14', condition: 'used', conditionText: 'Б/У (Чудовий 92%)', battery: 89, storage: '256GB', price: 29800, color: 'Deep Purple', img: 'https://images.unsplash.com/photo-1663499482523-1c0c1bae4ce1?q=80&w=500&auto=format&fit=crop', available: true },
+            { id: 104, title: 'iPhone 13', series: '13', condition: 'used', conditionText: 'Б/У (Хороший 88%)', battery: 86, storage: '128GB', price: 18900, color: 'Midnight', img: 'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?q=80&w=500&auto=format&fit=crop', available: true },
+            { id: 105, title: 'iPhone 11', series: '11', condition: 'used', conditionText: 'Б/У (Хороший 85%)', battery: 85, storage: '128GB', price: 10500, color: 'Black', img: 'https://images.unsplash.com/photo-1574944985070-8f30c4397e30?q=80&w=500&auto=format&fit=crop', available: true },
+            { id: 106, title: 'iPhone 15', series: '15', condition: 'new', conditionText: 'Новий', battery: 100, storage: '128GB', price: 31000, color: 'Blue', img: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?q=80&w=500&auto=format&fit=crop', available: true }
+        ];
+
+        // DEMO USERS IN CRM
+        const demoUsers = [
+            { id: 1, name: 'Олександр Коваль', email: 'alex@gmail.com', phone: '+380971112233', orders: 2, messages: [] },
+            { id: 2, name: 'Марія Бойко', email: 'maria@ukr.net', phone: '+380674445566', orders: 1, messages: [] }
+        ];
+
+        // STATE MANAGEMENT WITH LOCALSTORAGE PERSISTENCE
+        let products = JSON.parse(localStorage.getItem('irealm_products')) || initialProducts;
+        let users = JSON.parse(localStorage.getItem('irealm_users')) || demoUsers;
+        let currentUser = JSON.parse(localStorage.getItem('irealm_current_user')) || null;
+        let cart = JSON.parse(localStorage.getItem('irealm_cart')) || [];
+        let promoCodes = JSON.parse(localStorage.getItem('irealm_promos')) || [{ code: 'APEX10', discount: 10 }];
+        let logs = JSON.parse(localStorage.getItem('irealm_logs')) || ['[SYSTEM] Сервер iRealm Hub запущен. Моніторинг активний.'];
+        let totalRevenue = parseInt(localStorage.getItem('irealm_revenue')) || 124500;
+        let totalOrdersCount = parseInt(localStorage.getItem('irealm_orders_count')) || 4;
+
+        let activeConditionFilter = 'all';
+        let appliedPromo = null;
+        let avatarTapCounter = 0;
+        let avatarTapTimer = null;
+        let headerLogoTapCounter = 0;
+        let headerLogoTapTimer = null;
+        let activeAdminMsgUserId = null;
+
+        // INITIALIZATION
+        window.onload = function() {
+            renderCatalog();
+            updateCartBadge();
+            updateUserUI();
+            logAction('Користувач відвідав головну сторінку.');
+        };
+
+        function logAction(msg) {
+            const timestamp = new Date().toLocaleTimeString();
+            logs.unshift(`[${timestamp}] ${msg}`);
+            if (logs.length > 50) logs.pop();
+            localStorage.setItem('irealm_logs', JSON.stringify(logs));
+        }
+
+        // RENDER CATALOG PRODUCTS
+        function renderCatalog() {
+            const grid = document.getElementById('productGrid');
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const series = document.getElementById('seriesFilter').value;
+            const storage = document.getElementById('storageFilter').value;
+            const sort = document.getElementById('sortFilter').value;
+
+            let filtered = products.filter(p => {
+                if (activeConditionFilter !== 'all' && p.condition !== activeConditionFilter) return false;
+                if (series !== 'all' && p.series !== series) return false;
+                if (storage !== 'all' && p.storage !== storage) return false;
+                if (search && !p.title.toLowerCase().includes(search)) return false;
+                return true;
+            });
+
+            // Sorting
+            if (sort === 'price-asc') filtered.sort((a,b) => a.price - b.price);
+            if (sort === 'price-desc') filtered.sort((a,b) => b.price - a.price);
+            if (sort === 'battery-desc') filtered.sort((a,b) => b.battery - a.battery);
+
+            grid.innerHTML = '';
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `<div class="col-span-full py-12 text-center text-gray-500 text-sm">Пристроїв за вказаними фільтрами не знайдено.</div>`;
+                return;
+            }
+
+            filtered.forEach(p => {
+                const card = document.createElement('div');
+                card.className = "glass-card rounded-3xl p-5 border border-white/10 hover:border-blue-500/50 transition-all duration-300 flex flex-col justify-between group relative overflow-hidden";
+                
+                const isNew = p.condition === 'new';
+                const badgeColor = isNew ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' : 'bg-amber-500/20 text-amber-400 border-amber-500/30';
+
+                card.innerHTML = `
+                    <div>
+                        <!-- Top Badges -->
+                        <div class="flex items-center justify-between gap-2 mb-3">
+                            <span class="px-2.5 py-1 rounded-full border ${badgeColor} text-[10px] font-bold">
+                                ${p.conditionText}
+                            </span>
+                            <span class="text-[10px] font-bold text-gray-400 flex items-center gap-1">
+                                <i data-lucide="battery-charging" class="w-3 h-3 text-emerald-400"></i> АКБ ${p.battery}%
+                            </span>
+                        </div>
+
+                        <!-- Product Image -->
+                        <div class="relative h-48 rounded-2xl overflow-hidden mb-4 bg-zinc-900/60 flex items-center justify-center">
+                            <img src="${p.img}" alt="${p.title}" class="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            ${!p.available ? '<div class="absolute inset-0 bg-black/80 flex items-center justify-center font-bold text-red-400 text-xs uppercase">Немає в наявності</div>' : ''}
+                        </div>
+
+                        <h3 class="text-base font-extrabold text-white group-hover:text-blue-400 transition-colors">${p.title}</h3>
+                        <p class="text-xs text-gray-400 mt-0.5">${p.storage} • ${p.color}</p>
+                    </div>
+
+                    <div class="mt-4 pt-4 border-t border-white/10 flex items-center justify-between">
+                        <div>
+                            <p class="text-[10px] text-gray-400">Ціна:</p>
+                            <p class="text-lg font-black text-white">${p.price.toLocaleString()} ₴</p>
+                        </div>
+
+                        <button onclick="addToCart(${p.id})" ${!p.available ? 'disabled' : ''} class="p-3 bg-blue-600 hover:bg-blue-500 disabled:bg-zinc-800 disabled:text-gray-600 text-white rounded-2xl transition-all shadow-lg active:scale-95">
+                            <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+            lucide.createIcons();
+        }
+
+        function filterCondition(type) {
+            activeConditionFilter = type;
+            document.getElementById('btnFilterAll').className = type === 'all' ? "px-4 py-2 rounded-xl text-xs font-bold transition-all bg-blue-600 text-white" : "px-4 py-2 rounded-xl text-xs font-bold transition-all text-gray-400 hover:text-white";
+            document.getElementById('btnFilterNew').className = type === 'new' ? "px-4 py-2 rounded-xl text-xs font-bold transition-all bg-emerald-600 text-white" : "px-4 py-2 rounded-xl text-xs font-bold transition-all text-gray-400 hover:text-white";
+            document.getElementById('btnFilterUsed').className = type === 'used' ? "px-4 py-2 rounded-xl text-xs font-bold transition-all bg-amber-600 text-white" : "px-4 py-2 rounded-xl text-xs font-bold transition-all text-gray-400 hover:text-white";
+            renderCatalog();
+        }
+
+        function applyFilters() { renderCatalog(); }
+
+        // CART LOGIC
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product || !product.available) return;
+
+            const existing = cart.find(item => item.id === productId);
+            if (existing) {
+                existing.qty++;
+            } else {
+                cart.push({ ...product, qty: 1 });
+            }
+            saveCart();
+            updateCartBadge();
+            toggleCartDrawer(true);
+            logAction(`Додано в кошик: ${product.title}`);
+        }
+
+        function saveCart() {
+            localStorage.setItem('irealm_cart', JSON.stringify(cart));
+        }
+
+        function updateCartBadge() {
+            const totalQty = cart.reduce((sum, item) => sum + item.qty, 0);
+            document.getElementById('cartCountBadge').innerText = totalQty;
+            renderCartItems();
+        }
+
+        function toggleCartDrawer(open) {
+            const drawer = document.getElementById('cartDrawer');
+            if (open === true) drawer.classList.remove('hidden');
+            else if (open === false) drawer.classList.add('hidden');
+            else drawer.classList.toggle('hidden');
+        }
+
+        function renderCartItems() {
+            const container = document.getElementById('cartItemsList');
+            container.innerHTML = '';
+
+            if (cart.length === 0) {
+                container.innerHTML = `<p class="text-xs text-gray-500 italic text-center py-8">Кошик порожній.</p>`;
+            } else {
+                cart.forEach(item => {
+                    const row = document.createElement('div');
+                    row.className = "glass p-3 rounded-2xl flex items-center justify-between border border-white/10";
+                    row.innerHTML = `
+                        <div class="flex items-center gap-3">
+                            <img src="${item.img}" class="w-12 h-12 rounded-xl object-cover" alt="${item.title}">
+                            <div>
+                                <h4 class="text-xs font-bold text-white">${item.title}</h4>
+                                <p class="text-[10px] text-gray-400">${item.storage} • ${item.price.toLocaleString()} ₴</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button onclick="changeQty(${item.id}, -1)" class="w-6 h-6 rounded-lg glass flex items-center justify-center text-xs font-bold text-gray-300">-</button>
+                            <span class="text-xs font-bold text-white">${item.qty}</span>
+                            <button onclick="changeQty(${item.id}, 1)" class="w-6 h-6 rounded-lg glass flex items-center justify-center text-xs font-bold text-gray-300">+</button>
+                        </div>
+                    `;
+                    container.appendChild(row);
+                });
+            }
+
+            calculateCartTotals();
+        }
+
+        function changeQty(id, delta) {
+            const item = cart.find(i => i.id === id);
+            if (!item) return;
+            item.qty += delta;
+            if (item.qty <= 0) {
+                cart = cart.filter(i => i.id !== id);
+            }
+            saveCart();
+            updateCartBadge();
+        }
+
+        function applyPromoCode() {
+            const codeInput = document.getElementById('cartPromoInput').value.trim().toUpperCase();
+            const found = promoCodes.find(p => p.code === codeInput);
+            if (found) {
+                appliedPromo = found;
+                document.getElementById('cartDiscountRow').classList.remove('hidden');
+                calculateCartTotals();
+                alert(`Промокод застосовано! Знижка ${found.discount}%`);
+            } else {
+                alert('Невірний промокод');
+            }
+        }
+
+        function calculateCartTotals() {
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+            let discountVal = 0;
+            if (appliedPromo) {
+                discountVal = Math.round(subtotal * (appliedPromo.discount / 100));
+            }
+            const total = subtotal - discountVal;
+
+            document.getElementById('cartSubtotalText').innerText = `${subtotal.toLocaleString()} ₴`;
+            document.getElementById('cartDiscountText').innerText = `-${discountVal.toLocaleString()} ₴`;
+            document.getElementById('cartTotalText').innerText = `${total.toLocaleString()} ₴`;
+            document.getElementById('checkoutFinalAmount').innerText = `${total.toLocaleString()} ₴`;
+        }
+
+        // AUTH & USER PROFILE
+        function openProfileOrAuth() {
+            if (currentUser) {
+                document.getElementById('profileModal').classList.remove('hidden');
+            } else {
+                document.getElementById('authModal').classList.remove('hidden');
+            }
+        }
+
+        function closeAuthModal() { document.getElementById('authModal').classList.add('hidden'); }
+        function closeProfileModal() { document.getElementById('profileModal').classList.add('hidden'); }
+
+        function switchAuthTab(tab) {
+            if (tab === 'login') {
+                document.getElementById('formLogin').classList.remove('hidden');
+                document.getElementById('formRegister').classList.add('hidden');
+                document.getElementById('tabLogin').className = "flex-1 py-2 text-xs font-bold text-white border-b-2 border-blue-500";
+                document.getElementById('tabRegister').className = "flex-1 py-2 text-xs font-bold text-gray-400 hover:text-white";
+            } else {
+                document.getElementById('formLogin').classList.add('hidden');
+                document.getElementById('formRegister').classList.remove('hidden');
+                document.getElementById('tabLogin').className = "flex-1 py-2 text-xs font-bold text-gray-400 hover:text-white";
+                document.getElementById('tabRegister').className = "flex-1 py-2 text-xs font-bold text-emerald-500 border-b-2 border-emerald-500";
+            }
+        }
+
+        function handleRegisterSubmit(e) {
+            e.preventDefault();
+            const name = document.getElementById('regName').value;
+            const email = document.getElementById('regEmail').value;
+            const phone = document.getElementById('regPhone').value.trim() || 'Не вказано';
+
+            const newUser = { id: Date.now(), name, email, phone, orders: 0, messages: [] };
+            users.push(newUser);
+            currentUser = newUser;
+
+            localStorage.setItem('irealm_users', JSON.stringify(users));
+            localStorage.setItem('irealm_current_user', JSON.stringify(currentUser));
+
+            logAction(`Новий користувач зареєструвався: ${name}`);
+            updateUserUI();
+            closeAuthModal();
+        }
+
+        function handleLoginSubmit(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            let found = users.find(u => u.email === email);
+            if (!found) {
+                found = { id: Date.now(), name: 'Клієнт iRealm', email: email, phone: 'Не вказано', orders: 1, messages: [] };
+                users.push(found);
+                localStorage.setItem('irealm_users', JSON.stringify(users));
+            }
+            currentUser = found;
+            localStorage.setItem('irealm_current_user', JSON.stringify(currentUser));
+            logAction(`Користувач увійшов: ${currentUser.name}`);
+            updateUserUI();
+            closeAuthModal();
+        }
+
+        function handleLogout() {
+            currentUser = null;
+            localStorage.removeItem('irealm_current_user');
+            updateUserUI();
+            closeProfileModal();
+        // EASTER EGG MECHANIC: RAPID 10 TAPS ON PROFILE AVATAR OR HEADER LOGO UNLOCKS SECRET ADMIN PIN FOR GUESTS
+        function registerAvatarTap() {
+            avatarTapCounter++;
+            const hint = document.getElementById('tapHintCounter');
+            if (hint) hint.innerText = `[${avatarTapCounter}/10]`;
+
+            clearTimeout(avatarTapTimer);
+            avatarTapTimer = setTimeout(() => {
+                avatarTapCounter = 0;
+                if (hint) hint.innerText = '';
+            }, 3000);
+
+            if (avatarTapCounter >= 10) {
+                avatarTapCounter = 0;
+                if (hint) hint.innerText = '';
+                closeProfileModal();
+                closeAuthModal();
+                document.getElementById('adminPinModal').classList.remove('hidden');
+            }
+        }
+
+        function registerHeaderLogoTap(e) {
+            e.preventDefault();
+            headerLogoTapCounter++;
+            const counterSpan = document.getElementById('headerTapCounter');
+            if (counterSpan) counterSpan.innerText = `[${headerLogoTapCounter}/10]`;
+
+            clearTimeout(headerLogoTapTimer);
+            headerLogoTapTimer = setTimeout(() => {
+                headerLogoTapCounter = 0;
+                if (counterSpan) counterSpan.innerText = '';
+            }, 3000);
+
+            if (headerLogoTapCounter >= 10) {
+                headerLogoTapCounter = 0;
+                if (counterSpan) counterSpan.innerText = '';
+                closeProfileModal();
+                closeAuthModal();
+                document.getElementById('adminPinModal').classList.remove('hidden');
+            }
+        }
+
+        function openAdminPinModalFromGuest() {
+            closeAuthModal();
+            closeProfileModal();
+            document.getElementById('adminPinModal').classList.remove('hidden');
+        }
+
+        function closeAdminPinModal() { document.getElementById('adminPinModal').classList.add('hidden'); }
+
+        function verifyAdminPin() {
+            const pin = document.getElementById('adminPinInput').value;
+            if (pin === '152429') {
+                closeAdminPinModal();
+                openAdminConsole();
+                logAction('УСПІШНИЙ ВХІД В СУПЕР АДМІН-ПАНЕЛЬ (Код 152429)');
+            } else {
+                alert('НЕВІРНИЙ АДМІН-КОД!');
+            }
+        }
+
+        // SUPER ADMIN CONSOLE LOGIC
+        function openAdminConsole() {
+            document.getElementById('adminConsoleModal').classList.remove('hidden');
+            renderAdminData();
+        }
+
+        function closeAdminConsole() { document.getElementById('adminConsoleModal').classList.add('hidden'); }
+
+        function renderAdminData() {
+            // Stats
+            document.getElementById('admStatRevenue').innerText = `${totalRevenue.toLocaleString()} ₴`;
+            document.getElementById('admStatUsers').innerText = users.length;
+            document.getElementById('admStatItems').innerText = products.length;
+            document.getElementById('admStatOrders').innerText = totalOrdersCount;
+            document.getElementById('admUsersCount').innerText = users.length;
+
+            // Inventory Table
+            const invTable = document.getElementById('admInventoryTable');
+            invTable.innerHTML = '';
+            products.forEach(p => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-white/5 transition-colors";
+                tr.innerHTML = `
+                    <td class="p-3 font-bold text-white">${p.title}</td>
+                    <td class="p-3 text-gray-400">${p.condition === 'new' ? 'Новий' : 'Б/У'}</td>
+                    <td class="p-3 text-emerald-400 font-bold">${p.battery}%</td>
+                    <td class="p-3">${p.storage}</td>
+                    <td class="p-3 font-bold text-amber-400">${p.price.toLocaleString()} ₴</td>
+                    <td class="p-3">
+                        <button onclick="toggleProductAvailability(${p.id})" class="px-2 py-1 rounded text-[10px] font-bold ${p.available ? 'bg-emerald-500/20 text-emerald-400' : 'bg-red-500/20 text-red-400'}">
+                            ${p.available ? 'В наявності' : 'Немає'}
+                        </button>
+                    </td>
+                    <td class="p-3">
+                        <button onclick="deleteProduct(${p.id})" class="text-red-400 hover:text-red-300 font-bold">Видалити</button>
+                    </td>
+                `;
+                invTable.appendChild(tr);
+            });
+
+            // Users CRM Table
+            const usersTable = document.getElementById('admUsersTable');
+            usersTable.innerHTML = '';
+            users.forEach(u => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-white/5 transition-colors";
+                tr.innerHTML = `
+                    <td class="p-3 font-bold text-white">${u.name}</td>
+                    <td class="p-3 text-gray-400">${u.email}</td>
+                    <td class="p-3">${u.phone}</td>
+                    <td class="p-3 font-bold text-blue-400">${u.orders}</td>
+                    <td class="p-3">
+                        <button onclick="openAdminMsgModal(${u.id}, '${u.name}')" class="px-3 py-1 bg-blue-600/30 hover:bg-blue-600 text-blue-300 hover:text-white rounded-lg text-[10px] font-bold border border-blue-500/30">
+                            Написати клієнту
+                        </button>
+                    </td>
+                `;
+                usersTable.appendChild(tr);
+            });
+
+            // Active Promos
+            const promoBox = document.getElementById('admActivePromosList');
+            promoBox.innerHTML = '';
+            promoCodes.forEach(pr => {
+                const item = document.createElement('div');
+                item.className = "glass p-2.5 rounded-xl flex justify-between items-center text-xs";
+                item.innerHTML = `<span class="font-bold text-white uppercase">${pr.code}</span> <span class="text-emerald-400 font-bold">-${pr.discount}%</span>`;
+                promoBox.appendChild(item);
+            });
+
+            // Logs
+            const logsBox = document.getElementById('admLogsContainer');
+            logsBox.innerHTML = logs.map(l => `<div>${l}</div>`).join('');
+        }
+
+        function switchAdminTab(tab) {
+            document.getElementById('admSecInventory').classList.add('hidden');
+            document.getElementById('admSecUsers').classList.add('hidden');
+            document.getElementById('admSecPromos').classList.add('hidden');
+            document.getElementById('admSecLogs').classList.add('hidden');
+
+            document.getElementById('admTabInv').className = "px-4 py-2.5 rounded-t-xl text-gray-400 hover:text-white";
+            document.getElementById('admTabUsers').className = "px-4 py-2.5 rounded-t-xl text-gray-400 hover:text-white";
+            document.getElementById('admTabPromos').className = "px-4 py-2.5 rounded-t-xl text-gray-400 hover:text-white";
+            document.getElementById('admTabLogs').className = "px-4 py-2.5 rounded-t-xl text-gray-400 hover:text-white";
+
+            if (tab === 'inventory') {
+                document.getElementById('admSecInventory').classList.remove('hidden');
+                document.getElementById('admTabInv').className = "px-4 py-2.5 rounded-t-xl text-white bg-purple-600";
+            } else if (tab === 'users') {
+                document.getElementById('admSecUsers').classList.remove('hidden');
+                document.getElementById('admTabUsers').className = "px-4 py-2.5 rounded-t-xl text-white bg-purple-600";
+            } else if (tab === 'promos') {
+                document.getElementById('admSecPromos').classList.remove('hidden');
+                document.getElementById('admTabPromos').className = "px-4 py-2.5 rounded-t-xl text-white bg-purple-600";
+            } else if (tab === 'logs') {
+                document.getElementById('admSecLogs').classList.remove('hidden');
+                document.getElementById('admTabLogs').className = "px-4 py-2.5 rounded-t-xl text-white bg-purple-600";
+            }
+        }
+
+        function toggleProductAvailability(id) {
+            const p = products.find(item => item.id === id);
+            if (p) {
+                p.available = !p.available;
+                localStorage.setItem('irealm_products', JSON.stringify(products));
+                renderAdminData();
+                renderCatalog();
+            }
+        }
+
+        function deleteProduct(id) {
+            products = products.filter(p => p.id !== id);
+            localStorage.setItem('irealm_products', JSON.stringify(products));
+            renderAdminData();
+            renderCatalog();
+        }
+
+        function openAddNewPhoneModal() { document.getElementById('addNewPhoneModal').classList.remove('hidden'); }
+        function closeAddNewPhoneModal() { document.getElementById('addNewPhoneModal').classList.add('hidden'); }
+
+        function handleNewPhoneSubmit(e) {
+            e.preventDefault();
+            const newPhone = {
+                id: Date.now(),
+                title: document.getElementById('addPhoneTitle').value,
+                series: document.getElementById('addPhoneSeries').value,
+                condition: document.getElementById('addPhoneCondition').value,
+                conditionText: document.getElementById('addPhoneCondition').value === 'new' ? 'Новий' : 'Б/У (Чудовий)',
+                battery: parseInt(document.getElementById('addPhoneBattery').value),
+                storage: document.getElementById('addPhoneStorage').value,
+                price: parseInt(document.getElementById('addPhonePrice').value),
+                color: 'Space Grey',
+                img: document.getElementById('addPhoneImg').value || 'https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?q=80&w=500&auto=format&fit=crop',
+                available: true
+            };
+
+            products.unshift(newPhone);
+            localStorage.setItem('irealm_products', JSON.stringify(products));
+            closeAddNewPhoneModal();
+            renderAdminData();
+            renderCatalog();
+            logAction(`Адмін додав новий товар в каталог: ${newPhone.title}`);
+        }
+
+        function createNewPromoCode() {
+            const code = document.getElementById('newPromoCode').value.trim().toUpperCase();
+            const discount = parseInt(document.getElementById('newPromoDiscount').value);
+            if (code && discount) {
+                promoCodes.push({ code, discount });
+                localStorage.setItem('irealm_promos', JSON.stringify(promoCodes));
+                renderAdminData();
+                alert('Промокод створено!');
+            }
+        }
+
+        // DIRECT MESSENGER LOGIC
+        function openAdminMsgModal(userId, userName) {
+            activeAdminMsgUserId = userId;
+            document.getElementById('admMsgTargetUser').innerText = `Отримувач: ${userName}`;
+            document.getElementById('admMsgModal').classList.remove('hidden');
+        }
+
+        function closeAdminMsgModal() { document.getElementById('admMsgModal').classList.add('hidden'); }
+
+        function sendAdminMessageToUser() {
+            const msg = document.getElementById('admMsgText').value;
+            if (!msg) return;
+
+            const target = users.find(u => u.id === activeAdminMsgUserId);
+            if (target) {
+                if (!target.messages) target.messages = [];
+                target.messages.push(msg);
+                localStorage.setItem('irealm_users', JSON.stringify(users));
+                logAction(`Адміністратор надіслав повідомлення для ${target.name}: "${msg}"`);
+                alert('Повідомлення надіслано клієнту!');
+                closeAdminMsgModal();
+            }
+        }
+
+        // CHECKOUT & SUCCESS ORDER
+        function openCheckoutModal() {
+            if (cart.length === 0) return alert('Ваш кошик порожній!');
+            toggleCartDrawer(false);
+            document.getElementById('checkoutModal').classList.remove('hidden');
+        }
+
+        function closeCheckoutModal() { document.getElementById('checkoutModal').classList.add('hidden'); }
+
+        function handleCheckoutSubmit(e) {
+            e.preventDefault();
+            const orderTotal = cart.reduce((s, i) => s + (i.price * i.qty), 0);
+            
+            totalRevenue += orderTotal;
+            totalOrdersCount++;
+
+            localStorage.setItem('irealm_revenue', totalRevenue);
+            localStorage.setItem('irealm_orders_count', totalOrdersCount);
+
+            logAction(`НОВЕ ЗАМОВЛЕННЯ на суму ${orderTotal.toLocaleString()} ₴ клієнтом ${document.getElementById('orderName').value}`);
+
+            cart = [];
+            saveCart();
+            updateCartBadge();
+            closeCheckoutModal();
+
+            if (typeof confetti === 'function') {
+                confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
+            }
+
+            alert('Вітаємо! Ваше замовлення успішно прийнято в обробку. Менеджер зв\'яжеться з вами найближчим часом.');
+        }
+
+        function toggleSearchModal() {
+            document.getElementById('searchInput').focus();
+        }
+    </script>
+</body>
+</html>
